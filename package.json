@@ -1,8 +1,9 @@
 {
   "name": "slot-text",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Slot machine style animted text for React Native",
-  "module": "src/index.ts",
+  "module": "index.ts",
+  "main": "index.js",
   "types": "src/index.d.ts",
   "type": "module",
   "peerDependencies": {

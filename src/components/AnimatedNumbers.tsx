@@ -29,7 +29,7 @@ const DEFAULT_DURTION = 200;
  *
  * @returns {JSX.Element} The animated number component with slots for digits and commas.
  */
-export const AnimatedNumbers = (props: AnimatedNumbersProps) => {
+const AnimatedNumbers = (props: AnimatedNumbersProps) => {
   const [valueQue, setValueQue] = useState<(typeof props.value)[]>([]);
 
   const [oldNumber, setOldNumber] = useState<{ value: number | string, key: string }[]>([]);
@@ -248,3 +248,5 @@ the visible clipping container. If a slot has the same number between the old an
 6. Pop any queued values and set the formated value, which will retriger the animation cycle
 
 */
+
+export default AnimatedNumbers;
