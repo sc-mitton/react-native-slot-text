@@ -10,6 +10,7 @@ import ReAnimated, { ZoomIn, StretchOutX } from 'react-native-reanimated';
 import styles from './styles';
 import Slot from './Slot';
 import type { AnimatedNumbersProps, Position } from './types';
+import { formatString } from "./helpers";
 
 const DEFAULT_DURTION = 200;
 
@@ -29,11 +30,12 @@ const DEFAULT_DURTION = 200;
  * @returns {JSX.Element} The animated number component with slots for digits and commas.
  */
 const AnimatedNumbers = (props: AnimatedNumbersProps) => {
-  const [valueQue, setValueQue] = useState<(typeof props.value)[]>([]);
 
-  const [oldNumber, setOldNumber] = useState<{ value: number | string, key: string }[]>([]);
-  const [newNumber, setNewNumber] = useState<{ value: number | string, key: string }[]>([]);
-  const [formattedValue, setFormattedValue] = useState(`${props.prefix || ''}${props.value}`);
+  const [state, setState] = useState<'idle' | 'animating'>('idle');
+
+  const [oldNumber, setOldNumber] = useState<(number | string)[]>([]);
+  const [newNumber, setNewNumber] = useState<(number | string)[]>([]);
+  const [animatingValue, setAnimatingValue] = useState<string>();
 
   // The initial positions of the slots that are animating in
   // -1 indicates above the slot, 0 indicates the slot, 1 indicates below the slot
@@ -48,68 +50,49 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
   const measureRef = useRef<View>(null);
 
   useEffect(() => {
-    if (`${props.prefix || ''}${props.value}` !== formattedValue) {
-      setValueQue(prev => [...prev, props.value]);
-    }
-  }, [props.value])
-
-  useEffect(() => {
-    if (valueQue.length > 0) {
-      setFormattedValue(`${props.prefix || ''}${valueQue[0]}`);
-      setValueQue(prev => prev.slice(1));
-    }
-  }, [valueQue])
-
-  useEffect(() => {
-    if (oldNumber.length === 0) {
-      setOldNumber(formattedValue
-        .split('')
-        .map((val, i) => ({
-          value: isNaN(val as any) ? val : parseInt(val),
-          key: `${val}-${i}`
-        })))
-    }
+    setOldNumber(`${props.prefix || ''}${props.value}`
+      .split('')
+      .map((val, i) => isNaN(val as any) ? val : parseInt(val)))
   }, [])
 
   useEffect(() => {
-    if (formattedValue === oldNumber.reduce((acc, val) => `${acc}${val.value}`, '')) {
-      return;
+    // Animation is in progress, queue the new value
+    if (state === 'idle' && oldNumber.join('') !== formatString(props.value, props.prefix)) {
+      setAnimatingValue(formatString(props.value, props.prefix));
     }
+  }, [props.value, state])
+
+  useEffect(() => {
+    if (!animatingValue) return;
+    setState('animating');
+
     // If the old number is not set, this means it's the initial rendering of this component
     // and the value needs to be loaded
     if (oldNumber?.length === 0) {
       setOldNumber(
-        formattedValue
+        animatingValue
           .split('')
-          .map((val, i) => ({
-            value: isNaN(val as any) ? val : parseInt(val),
-            key: `${val}-${i}`
-          }))
-      )
+          .map((val, i) => isNaN(val as any) ? val : parseInt(val)))
     }
     // Prepare the new number for animation
     else {
       setNewNumber(
-        formattedValue
+        animatingValue
           .split('')
-          .map((val, i) => ({
-            value: isNaN(val as any) ? val : parseInt(val),
-            key: `${val}-${i}`
-          }))
-      )
+          .map((val, i) => isNaN(val as any) ? val : parseInt(val)))
 
       // The positions of the slots that are animating in
-      let newValuePositions: (Position | undefined)[] = Array(formattedValue.length).fill(0);
+      let newValuePositions: (Position | undefined)[] = Array(animatingValue.length).fill(0);
       // Compare from the right to the left
       // * If the slots are the same value, no animation is needed for the slot, just stick it in the -1 position
       // * If one of the slots is a string, the new slot will move down
       // * If the new slot is greater than the old slot, the new slot will move down
       // or up depending on which is greater
       for (let i = 0; i < newValuePositions.length; i++) {
-        const oldNum = oldNumber[i]?.value;
-        const newNum = isNaN(formattedValue.charAt(i) as any)
-          ? formattedValue.charAt(i)
-          : parseInt(formattedValue.charAt(i));
+        const oldNum = oldNumber[i];
+        const newNum = isNaN(animatingValue.charAt(i) as any)
+          ? animatingValue.charAt(i)
+          : parseInt(animatingValue.charAt(i));
 
         if (oldNum === newNum) {
           newValuePositions[i] = undefined;
@@ -123,10 +106,10 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
 
       setOutFinalPositions([
         ...newValuePositions.slice(0, oldNumber.length).map(val => val ? val * -1 : 0),
-        ...Array(Math.max(0, oldNumber.length - formattedValue.length)).fill(-1)
+        ...Array(Math.max(0, oldNumber.length - animatingValue.length)).fill(-1)
       ])
     }
-  }, [formattedValue])
+  }, [animatingValue])
 
   const onMeasureLayout = useCallback((e: LayoutChangeEvent) => {
     if (containerSize.width === 0) {
@@ -153,7 +136,7 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
     setNewNumber([]);
     setInZeroPositions([]);
     setOutFinalPositions([]);
-    setValueQue(prev => prev.slice(1));
+    setState('idle');
   }, [newNumber])
 
   return (
@@ -169,14 +152,14 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
                 <ReAnimated.View
                   entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURTION).withInitialValues({ opacity: 0 })}
                   exiting={StretchOutX.withInitialValues({ opacity: 1 })}
-                  key={`${val.key}-${i}-comma`}
+                  key={`${val}-${i}-comma`}
                 >
-                  <Text key={`${val.key}-comma`} style={props.fontStyle}>,</Text>
+                  <Text style={props.fontStyle}>,</Text>
                 </ReAnimated.View>
               }
               <Slot
-                key={val.key}
-                value={val.value}
+                key={`${val}-${i}`}
+                value={val}
                 height={containerSize.height}
                 initial={0}
                 final={outFinalPositions[i] || 0}
@@ -191,15 +174,16 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
             <>
               {(newNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
                 <ReAnimated.View
+                  key={`${val}-${i}-comma-new`}
                   entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURTION).withInitialValues({ opacity: 0 })}
                   exiting={StretchOutX.withInitialValues({ opacity: 1 })}
                 >
-                  <Text key={`${val.key}-comma`} style={props.fontStyle}>,</Text>
+                  <Text style={props.fontStyle}>,</Text>
                 </ReAnimated.View>
               }
               <Slot
-                key={val.key}
-                value={val.value}
+                key={`${val}-${i}`}
+                value={val}
                 initial={inZeroPositions[i] || -1}
                 final={inZeroPositions[i] ? 0 : -1}
                 height={containerSize.height}
@@ -217,7 +201,7 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
         ref={measureRef}
       >
         {props.prefix && <Text style={props.fontStyle}>{props.prefix}</Text>}
-        {formattedValue.split('').map((val, i) => (
+        {oldNumber.map((val, i) => (
           <Text key={`${val}-${i}`} style={props.fontStyle}>
             {val}
           </Text>
