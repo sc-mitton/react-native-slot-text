@@ -17,23 +17,12 @@ https://github.com/user-attachments/assets/192d168a-6497-4035-9c8e-b39b88dabf56
 ## Usage
 
 ```
-    <Slider
-        value={value}
-        onValueChange={(value) => setValue(value[0])}
-        minimumValue={0}
-        maximumValue={limit_amount || 100}
-        step={1}
-        maximumTrackTintColor={theme.colors.quinaryText}
-        minimumTrackTintColor={theme.colors.blueText}
-        thumbTintColor={theme.colors.whiteText}
-        thumbStyle={{
-            width: 18,
-            height: 18,
-            shadowColor: theme.colors.navShadow,
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 1,
-            shadowRadius: 1,
-        }}
+    <SlotText
+        fontStyle={styles.animatedNumbers}
+        value={`${value}`}
+        prefix='$'
+        animationDuration={200}
+        includeComma={true}
     />
 ```
 
