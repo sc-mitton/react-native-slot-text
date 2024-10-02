@@ -6,9 +6,30 @@ To install dependencies:
 bun install slot-text
 ```
 
-
-
 This project was created using `bun init` in bun v1.1.21. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+
+## Usage
+
+```
+    <Slider
+        value={value}
+        onValueChange={(value) => setValue(value[0])}
+        minimumValue={0}
+        maximumValue={limit_amount || 100}
+        step={1}
+        maximumTrackTintColor={theme.colors.quinaryText}
+        minimumTrackTintColor={theme.colors.blueText}
+        thumbTintColor={theme.colors.whiteText}
+        thumbStyle={{
+            width: 18,
+            height: 18,
+            shadowColor: theme.colors.navShadow,
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 1,
+        }}
+    />
+```
 
 ### Props
 
