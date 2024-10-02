@@ -8,7 +8,10 @@ bun install react-native-slot-text
 
 This project was created using `bun init` in bun v1.1.21. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
 
-https://github.com/user-attachments/assets/df5449f1-e20c-4a18-8687-67f29652d7b6
+
+
+https://github.com/user-attachments/assets/192d168a-6497-4035-9c8e-b39b88dabf56
+
 
 
 ## Usage
