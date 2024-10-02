@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, Fragment } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import Slot from './Slot';
 import type { AnimatedNumbersProps, Position } from './types';
 import { formatString } from "./helpers";
 
-const DEFAULT_DURTION = 200;
+const DEFAULT_DURATION = 200;
 
 /**
  * AnimatedNumbers Component
@@ -118,13 +118,13 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
     } else {
       Animated.timing(containerWidth, {
         toValue: e.nativeEvent.layout.width,
-        duration: props.animationDuration || DEFAULT_DURTION,
+        duration: props.animationDuration || DEFAULT_DURATION,
         useNativeDriver: false,
-        delay: containerSize.width > e.nativeEvent.layout.width ? props.animationDuration || DEFAULT_DURTION : 0
+        delay: containerSize.width > e.nativeEvent.layout.width ? props.animationDuration || DEFAULT_DURATION : 0
       }).start();
       Animated.timing(containerHeight, {
         toValue: e.nativeEvent.layout.height,
-        duration: props.animationDuration || DEFAULT_DURTION,
+        duration: props.animationDuration || DEFAULT_DURATION,
         useNativeDriver: false
       }).start();
     }
@@ -147,51 +147,47 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
       ]}>
         <View style={styles.slotsContainer}>
           {oldNumber.map((val, i) => (
-            <>
+            <Fragment key={`${val}-${i}`}>
               {(oldNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
                 <ReAnimated.View
-                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURTION).withInitialValues({ opacity: 0 })}
+                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURATION).withInitialValues({ opacity: 0 })}
                   exiting={StretchOutX.withInitialValues({ opacity: 1 })}
-                  key={`${val}-${i}-comma`}
                 >
                   <Text style={props.fontStyle}>,</Text>
                 </ReAnimated.View>
               }
               <Slot
-                key={`${val}-${i}`}
                 value={val}
                 height={containerSize.height}
                 initial={0}
                 final={outFinalPositions[i] || 0}
-                animationDuration={props.animationDuration || DEFAULT_DURTION}
+                animationDuration={props.animationDuration || DEFAULT_DURATION}
                 fontStyle={props.fontStyle}
               />
-            </>
+            </Fragment>
           ))}
         </View>
         <View style={styles.slotsContainer}>
           {newNumber.map((val, i) => (
-            <>
+            <Fragment key={`${val}-${i}-new`}>
               {(newNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
                 <ReAnimated.View
-                  key={`${val}-${i}-comma-new`}
-                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURTION).withInitialValues({ opacity: 0 })}
+                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURATION).withInitialValues({ opacity: 0 })}
                   exiting={StretchOutX.withInitialValues({ opacity: 1 })}
                 >
                   <Text style={props.fontStyle}>,</Text>
                 </ReAnimated.View>
               }
               <Slot
-                key={`${val}-${i}`}
                 value={val}
                 initial={inZeroPositions[i] || -1}
                 final={inZeroPositions[i] ? 0 : -1}
                 height={containerSize.height}
-                animationDuration={props.animationDuration || DEFAULT_DURTION}
+                animationDuration={props.animationDuration || DEFAULT_DURATION}
                 fontStyle={props.fontStyle}
                 onCompleted={onCompleted}
               />
-            </>
+            </Fragment>
           ))}
         </View>
       </Animated.View>
