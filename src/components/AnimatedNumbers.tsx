@@ -5,7 +5,6 @@ import {
   Animated
 } from "react-native";
 import type { LayoutChangeEvent } from "react-native";
-import _ from 'lodash';
 import ReAnimated, { ZoomIn, StretchOutX } from 'react-native-reanimated';
 
 import styles from './styles';
@@ -115,7 +114,7 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
         if (oldNum === newNum) {
           newValuePositions[i] = undefined;
         } else {
-          newValuePositions[i] = _.isString(oldNum) || _.isString(newNum)
+          newValuePositions[i] = typeof oldNum === 'string' || typeof newNum === 'string'
             ? -1
             : oldNum === undefined ? -1 : newNum > oldNum ? -1 : 1;
         }

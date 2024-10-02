@@ -1,14 +1,11 @@
 {
   "name": "slot-text",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Slot machine style animted text for React Native",
   "module": "index.ts",
   "main": "index.js",
   "types": "src/types.d.ts",
   "type": "module",
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "release": "tsx src/pre-release.ts && cd lib && npm publish --access public --no-git-checks"
@@ -24,9 +21,7 @@
   ],
   "author": "sc-mitton <scm.mitton@gmail.com> (https://github.com/sc-mitton)",
   "license": "MIT",
-  "dependencies": {
-    "lodash": "^4.17.21",
-    "metro-react-native-babel-preset": "^0.77.0",
+  "peerDependencies": {
     "react": "^18.3.1",
     "react-native": "^0.75.3",
     "react-native-reanimated": "^3.15.4"
