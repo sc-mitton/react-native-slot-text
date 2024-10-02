@@ -4,7 +4,7 @@
   "description": "Slot machine style animted text for React Native",
   "module": "index.ts",
   "main": "index.js",
-  "types": "src/index.d.ts",
+  "types": "src/types.d.ts",
   "type": "module",
   "peerDependencies": {
     "typescript": "^5.0.0"

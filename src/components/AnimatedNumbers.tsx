@@ -10,7 +10,7 @@ import ReAnimated, { ZoomIn, StretchOutX } from 'react-native-reanimated';
 
 import styles from './styles';
 import Slot from './Slot';
-import type { AnimatedNumbersProps, Position } from '.';
+import type { AnimatedNumbersProps, Position } from './types';
 
 const DEFAULT_DURTION = 200;
 
