@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { Text, Animated } from 'react-native';
 
-import type { SlotProps } from './types';
+import type { SlotProps } from '.';
 
 const Slot = (props: SlotProps) => {
   const Y = useRef<Animated.Value>(new Animated.Value(props.initial * props.height));
