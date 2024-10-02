@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "release": "cd lib && bun publish --access public --no-git-checks"
+    "release": "cd lib && bun deploy --access public --no-git-checks"
   },
   "keywords": [
     "slot",
