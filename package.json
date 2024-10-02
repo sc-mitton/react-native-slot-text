@@ -1,5 +1,5 @@
 {
-  "name": "slot-text",
+  "name": "react-native-slot-text",
   "version": "1.0.5",
   "author": "sc-mitton <scm.mitton@gmail.com> (https://github.com/sc-mitton)",
   "main": "index.js",
@@ -24,7 +24,7 @@
     "react-native",
     "react",
     "slot-machine",
-    "slot-text",
+    "react-native-slot-text",
     "animation"
   ],
   "license": "MIT",
