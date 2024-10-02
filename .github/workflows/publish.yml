@@ -1,0 +1,27 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+          registry-url: 'https://registry.npmjs.org'
+      - uses: oven-sh/setup-bun@v2
+        with:
+            bun-version: latest
+      - name: Install dependencies
+        run: bun install
+      - name: Build
+        run: bun build
+      - name: Publish
+        run: bun release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
