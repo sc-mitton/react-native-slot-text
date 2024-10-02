@@ -9,8 +9,7 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "release": "cd lib && bun deploy --access public --no-git-checks"
+    "build": "tsc -p tsconfig.json"
   },
   "keywords": [
     "slot",
