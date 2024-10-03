@@ -8,13 +8,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     opacity: 0,
-    gap: 2
   },
   slotsContainer: {
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 2,
   }
 });
 
