@@ -170,14 +170,6 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
         <View style={styles.slotsContainer}>
           {newNumber.map((val, i) => (
             <Fragment key={`${val}-${i}-new`}>
-              {(newNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
-                <ReAnimated.View
-                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURATION).withInitialValues({ opacity: 0 })}
-                  exiting={StretchOutX.withInitialValues({ opacity: 1 })}
-                >
-                  <Text style={props.fontStyle}>,</Text>
-                </ReAnimated.View>
-              }
               <Slot
                 value={val}
                 initial={inZeroPositions[i] || -1}
