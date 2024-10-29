@@ -31,8 +31,9 @@ const DEFAULT_DURATION = 200;
  */
 const AnimatedNumbers = (props: AnimatedNumbersProps) => {
 
-  const [state, setState] = useState<'idle' | 'animating'>('idle');
+  const idRef = useRef(`slots-${Math.random().toString(36).substring(7)}`);
 
+  const [state, setState] = useState<'idle' | 'animating'>('idle');
   const [oldNumber, setOldNumber] = useState<(number | string)[]>([]);
   const [newNumber, setNewNumber] = useState<(number | string)[]>([]);
   const [animatingValue, setAnimatingValue] = useState<string>();
@@ -118,13 +119,12 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
     } else {
       Animated.timing(containerWidth, {
         toValue: e.nativeEvent.layout.width,
-        duration: props.animationDuration || DEFAULT_DURATION,
         useNativeDriver: false,
-        delay: containerSize.width > e.nativeEvent.layout.width ? props.animationDuration || DEFAULT_DURATION : 0
+        duration: containerSize.width > e.nativeEvent.layout.width ? props.animationDuration || DEFAULT_DURATION : 0
       }).start();
       Animated.timing(containerHeight, {
         toValue: e.nativeEvent.layout.height,
-        duration: props.animationDuration || DEFAULT_DURATION,
+        duration: 100,
         useNativeDriver: false
       }).start();
     }
@@ -147,16 +147,18 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
       ]}>
         <View style={styles.slotsContainer}>
           {oldNumber.map((val, i) => (
-            <Fragment key={`${val}-${i}`}>
+            <Fragment key={`${idRef}-slot-${i}`}>
               {(oldNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
                 <ReAnimated.View
+                  key={`${idRef}-comma-${i}-old`}
                   entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURATION).withInitialValues({ opacity: 0 })}
-                  exiting={StretchOutX.withInitialValues({ opacity: 1 })}
+                  exiting={StretchOutX.withInitialValues({ opacity: 1 }).duration(props.animationDuration || DEFAULT_DURATION)}
                 >
                   <Text style={props.fontStyle}>,</Text>
                 </ReAnimated.View>
               }
               <Slot
+                key={`${idRef}-${val}-${i}-old`}
                 value={val}
                 height={containerSize.height}
                 initial={0}
@@ -169,7 +171,16 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
         </View>
         <View style={styles.slotsContainer}>
           {newNumber.map((val, i) => (
-            <Fragment key={`${val}-${i}-new`}>
+            <Fragment key={`${idRef}-${val}-${i}-new`}>
+              {(newNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
+                <ReAnimated.View
+                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURATION)}
+                  exiting={StretchOutX.withInitialValues({ opacity: 1 }).duration(props.animationDuration || DEFAULT_DURATION)}
+                  style={styles.hiddenComma}
+                >
+                  <Text style={props.fontStyle}>,</Text>
+                </ReAnimated.View>
+              }
               <Slot
                 value={val}
                 initial={inZeroPositions[i] || -1}
@@ -183,18 +194,19 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
           ))}
         </View>
       </Animated.View>
-      <View
-        onLayout={onMeasureLayout}
-        style={styles.spacer}
-        ref={measureRef}
-      >
-        {props.prefix && <Text style={props.fontStyle}>{props.prefix}</Text>}
-        {oldNumber.map((val, i) => (
-          <Text key={`${val}-${i}`} style={props.fontStyle}>
-            {val}
-          </Text>
-        ))}
-      </View>
+      {newNumber.length > 0 &&
+        <View
+          onLayout={onMeasureLayout}
+          style={styles.spacer}
+          ref={measureRef}
+        >
+          {props.prefix && <Text style={props.fontStyle}>{props.prefix}</Text>}
+          {newNumber.map((val, i) => (
+            <Text key={`${val}-${i}`} style={props.fontStyle}>
+              {val}
+            </Text>
+          ))}
+        </View>}
     </>
   )
 }

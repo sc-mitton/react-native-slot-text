@@ -13,6 +13,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  hiddenComma: {
+    opacity: 0,
   }
 });
 
