@@ -1,6 +1,6 @@
 {
   "name": "react-native-slot-text",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "sc-mitton <scm.mitton@gmail.com> (https://github.com/sc-mitton)",
   "main": "index.js",
   "module": "index.ts",
