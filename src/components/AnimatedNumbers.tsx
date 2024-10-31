@@ -151,7 +151,7 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
               {(oldNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
                 <ReAnimated.View
                   key={`${idRef}-comma-${i}-old`}
-                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURATION).withInitialValues({ opacity: 0 })}
+                  entering={ZoomIn.delay((props.animationDuration || DEFAULT_DURATION) / 2).duration((props.animationDuration || DEFAULT_DURATION) / 2).withInitialValues({ opacity: 0 })}
                   exiting={StretchOutX.withInitialValues({ opacity: 1 }).duration(props.animationDuration || DEFAULT_DURATION)}
                 >
                   <Text style={props.fontStyle}>,</Text>
@@ -174,7 +174,7 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
             <Fragment key={`${idRef}-${val}-${i}-new`}>
               {(newNumber.length - i) % 3 === 0 && i > 1 && props.includeComma &&
                 <ReAnimated.View
-                  entering={ZoomIn.delay(props.animationDuration || DEFAULT_DURATION)}
+                  entering={ZoomIn.delay((props.animationDuration || DEFAULT_DURATION) / 2).duration((props.animationDuration || DEFAULT_DURATION) / 2)}
                   exiting={StretchOutX.withInitialValues({ opacity: 1 }).duration(props.animationDuration || DEFAULT_DURATION)}
                   style={styles.hiddenComma}
                 >
