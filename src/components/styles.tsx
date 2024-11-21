@@ -1,20 +1,19 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  animatedNumbers: {
-    overflow: 'hidden',
-  },
   spacer: {
-    position: 'absolute',
-    flexDirection: 'row',
-    opacity: 0,
+    width: 0,
   },
   slotsContainer: {
-    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  hiddenComma: {
+  slotContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end'
+  },
+  hiddenSlot: {
+    position: 'absolute',
     opacity: 0,
   }
 });
