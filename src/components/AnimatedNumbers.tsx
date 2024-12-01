@@ -122,6 +122,7 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
               setSlotHeight(e.nativeEvent.layout.height);
               if (i === 10) {
                 setCommaWidth(e.nativeEvent.layout.width);
+                setSizesMeasured(true);
               } else {
                 const charSize = e.nativeEvent.layout.width;
                 setCharSizes(prev => {
@@ -129,7 +130,6 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
                   newSizes[i] = charSize;
                   return newSizes;
                 });
-                setSizesMeasured(true);
               }
             }}
           >
