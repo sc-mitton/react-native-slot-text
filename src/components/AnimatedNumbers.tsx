@@ -1,4 +1,4 @@
-import { useState, useRef, Fragment, useLayoutEffect, useCallback } from "react";
+import { useState, useRef, Fragment, useLayoutEffect, useCallback, useEffect } from "react";
 import { View, Text } from "react-native";
 import { useSharedValue } from 'react-native-reanimated';
 
@@ -33,14 +33,15 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
   const idRef = useRef(`slots-${Math.random().toString(36).substring(7)}`);
 
   // Indexes of slots that have finished animating
-  const slotsTrashBin = useSharedValue<number[]>([]);
   const queuedNumber = useSharedValue<typeof props.value | null>(null);
 
   const [slots, setSlots] = useState<SlotValue[]>([]);
   const [commaPositions, setCommaPositions] = useState<CommaPosition[]>([]);
   const [commaWidth, setCommaWidth] = useState(0);
   const [sizesMeasured, setSizesMeasured] = useState(false);
-  const [keys, setKeys] = useState<number[]>(Array.from({ length: props.value.toString().length }).map((_, i) => i));
+  const [keys, setKeys] = useState<string[]>(Array.from({ length: props.value.toString().length }).map((_, i) =>
+    Math.random().toString(36).substring(2, 9)
+  ));
   const [slotHeight, setSlotHeight] = useState(0);
   const [charSizes, setCharSizes] = useState<number[]>(Array.from({ length: 10 }).map((_, i) => 0));
 
@@ -58,7 +59,17 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
         setCommaPositions(newCommaPositions);
       }
       const newSlots = getNewSlots(props.value, slots, parseFromLeft);
-      setKeys(Array.from({ length: newSlots.length }).map((_, i) => i));
+      setKeys(prev =>
+        prev.length > newSlots.length
+          ? newSlots[0]?.[1] === null
+            ? prev.slice(-1 * prev.length - newSlots.length)
+            : prev.slice(0, newSlots.length)
+          : prev.length < newSlots.length
+            ? newSlots[0]?.[0] === null
+              ? Array.from({ length: newSlots.length - prev.length }).map((_, i) => Math.random().toString(36).substring(2, 9)).concat(prev)
+              : prev.concat(Array.from({ length: newSlots.length - prev.length }).map((_, i) => Math.random().toString(36).substring(2, 9)))
+            : prev
+      )
       setSlots(newSlots);
     }
   }, [props.value]);
@@ -74,15 +85,11 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
       .slice(slots[0]?.[1] === null ? numberOfSlotsRemoved : 0) // Trim from left
       .slice(0, slots[slots.length - 1]?.[1] === null ? -1 * numberOfSlotsRemoved : undefined) // Trim from right
 
-    if (cleanedSlots.length < slots.length) {
-      setKeys(prev => prev.slice(-1 * cleanedSlots.length));
-    } else {
-      setKeys(Array.from({ length: cleanedSlots.length }).map((_, i) => i));
-    }
-    setSlots(cleanedSlots);
-    setCommaPositions(cleanedCommas);
+    setTimeout(() => {
+      setSlots(cleanedSlots);
+      setCommaPositions(cleanedCommas);
+    }, 0);
 
-    slotsTrashBin.value = [];
   }, [slots, commaPositions]);
 
   return (
@@ -140,26 +147,5 @@ const AnimatedNumbers = (props: AnimatedNumbersProps) => {
     </>
   )
 }
-
-/*
-Basic logic:
-
-When a new value comes in:
-
-1. If there is an animation currently in progress then queue the new value with any prefix prepended
-
-2. For an animation cycle, split the new number and set the new number state
-
-3. Loop through the new number and old number and compare digits, determing which way the new numbers
-and old numers need to animate. There are two versions of the number, one that's visible, and one outside
-the visible clipping container. If a slot has the same number between the old and new nummer, it wont be animated.
-
-4. Set the new positions wich will trigger the animations of the slots
-
-5. At the end, clear the new number and set the old number to the new number
-
-6. Pop any queued values and set the formated value, which will retriger the animation cycle
-
-*/
 
 export default AnimatedNumbers;

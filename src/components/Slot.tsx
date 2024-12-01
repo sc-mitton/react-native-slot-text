@@ -81,7 +81,9 @@ const Slot = (props: SlotProps) => {
           withTiming(
             0,
             { duration: props.animationDuration },
-            () => { props.onCompleted && runOnJS(props.onCompleted)() }
+            () => {
+              props.onCompleted && runOnJS(props.onCompleted)()
+            }
           )
         );
       } else if (incomingValue < currentValue) {
@@ -91,7 +93,9 @@ const Slot = (props: SlotProps) => {
           withTiming(
             0,
             { duration: props.animationDuration },
-            () => { props.onCompleted && runOnJS(props.onCompleted)() }
+            () => {
+              props.onCompleted && runOnJS(props.onCompleted)()
+            }
           )
         );
       }
