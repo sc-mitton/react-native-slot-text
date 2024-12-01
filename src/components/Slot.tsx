@@ -7,7 +7,8 @@ import Animated, {
   withSequence,
   useAnimatedStyle,
   interpolate,
-  runOnJS
+  runOnJS,
+  Easing
 } from 'react-native-reanimated';
 
 import styles from './styles';
@@ -40,7 +41,7 @@ const Slot = (props: SlotProps) => {
     else if (incomingValue === null) {
       y.value = withTiming(
         -1 * props.height,
-        { duration: props.animationDuration },
+        { duration: props.animationDuration, easing: Easing.ease },
         () => {
           props.onCompleted && runOnJS(props.onCompleted)()
         }
@@ -60,7 +61,7 @@ const Slot = (props: SlotProps) => {
         withTiming(-1 * props.height, { duration: 0 }),
         withTiming(
           0,
-          { duration: props.animationDuration },
+          { duration: props.animationDuration, easing: Easing.ease },
           () => {
             props.onCompleted && runOnJS(props.onCompleted)()
           }
@@ -74,9 +75,9 @@ const Slot = (props: SlotProps) => {
         { duration: props.animationDuration / 2 }
       )
       if (incomingValue > currentValue) {
-        y.value = withTiming(props.height, { duration: props.animationDuration });
+        y.value = withTiming(props.height, { duration: props.animationDuration, easing: Easing.ease });
         incomingY.value = withSequence(
-          withTiming(-1 * props.height, { duration: 0 }),
+          withTiming(-1 * props.height, { duration: 0, easing: Easing.ease }),
           withTiming(
             0,
             { duration: props.animationDuration },
@@ -84,9 +85,9 @@ const Slot = (props: SlotProps) => {
           )
         );
       } else if (incomingValue < currentValue) {
-        y.value = withTiming(-1 * props.height, { duration: props.animationDuration });
+        y.value = withTiming(-1 * props.height, { duration: props.animationDuration, easing: Easing.ease });
         incomingY.value = withSequence(
-          withTiming(1 * props.height, { duration: 0 }),
+          withTiming(1 * props.height, { duration: 0, easing: Easing.ease }),
           withTiming(
             0,
             { duration: props.animationDuration },
